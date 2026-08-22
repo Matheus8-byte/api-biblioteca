@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estante & Maré — Catálogo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Special+Elite&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #17110C;
+    --bg-deep: #0F0B08;
+    --amber: #E2A33D;
+    --amber-soft: #C98B34;
+    --rust: #C1502E;
+    --teal: #5E9C93;
+    --text-light: #F3E7CC;
+    --text-muted: #A6957A;
+    --text-dark: #2E2013;
+
+    --rail: #4A2F1C;
+    --wood-1a: #C89A5B; --wood-1b: #B4813F;
+    --wood-2a: #D4B583; --wood-2b: #C19C5F;
+    --wood-3a: #B98548; --wood-3b: #A56F35;
+    --paint-base: #E3C6B2; --paint-tail: #C1502E;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text-light);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    z-index: 999;
+  }
+
+  header {
+    position: relative;
+    padding: 72px 24px 48px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .sun {
+    position: absolute;
+    top: -140px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, var(--amber) 0%, var(--rust) 55%, transparent 75%);
+    opacity: 0.35;
+    filter: blur(6px);
+  }
+
+  .sun::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 14px,
+      var(--bg) 14px, var(--bg) 20px
+    );
+    -webkit-mask-image: linear-gradient(to bottom, transparent 52%, black 58%);
+    mask-image: linear-gradient(to bottom, transparent 52%, black 58%);
+  }
+
+  .eyebrow {
+    position: relative;
+    font-family: 'Special Elite', monospace;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin: 0 0 18px;
+  }
+
+  h1 {
+    position: relative;
+    font-family: 'Alfa Slab One', serif;
+    font-weight: 400;
+    font-size: clamp(34px, 6vw, 60px);
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+    color: #EDDDBB;
+    text-shadow: 0 0 28px rgba(226,163,61,0.35), 0 2px 0 rgba(0,0,0,0.4);
+  }
+
+  header p {
+    position: relative;
+    color: var(--text-muted);
+    font-size: 14px;
+    max-width: 460px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  main {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 20px 24px 100px;
+    position: relative;
+  }
+
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 30px;
+    font-family: 'Special Elite', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(118px, 138px));
+    justify-content: center;
+    gap: 22px 14px;
+    align-items: start;
+  }
+
+  /* ---- pranchas ---- */
+
+  .card {
+    position: relative;
+    transform: rotate(var(--tilt, 0deg));
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: drop-shadow(0 8px 10px rgba(0,0,0,0.55));
+  }
+
+  .card:hover {
+    transform: rotate(0deg) translateY(-6px) scale(1.03);
+    filter: drop-shadow(0 14px 18px rgba(0,0,0,0.6)) drop-shadow(0 0 20px rgba(226,163,61,0.5));
+  }
+
+  .card:nth-child(6n+1) { --tilt: -2deg; }
+  .card:nth-child(6n+2) { --tilt: 1.4deg; }
+  .card:nth-child(6n+3) { --tilt: -1deg; }
+  .card:nth-child(6n+4) { --tilt: 2.2deg; }
+  .card:nth-child(6n+5) { --tilt: -1.6deg; }
+  .card:nth-child(6n+6) { --tilt: 0.8deg; }
+
+  /* rail: camada de trás, um pouco maior, cria a borda escura ao redor do deck */
+  .board-rail {
+    background: var(--rail);
+    clip-path: url(#board-long);
+    padding: 3.5px;
+    aspect-ratio: 0.34;
+  }
+
+  .card.fish .board-rail {
+    aspect-ratio: 0.58;
+    clip-path: url(#board-fish);
+  }
+
+  .board-shape {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 13px;
+    text-align: center;
+    position: relative;
+    clip-path: url(#board-long);
+    background: repeating-linear-gradient(97deg, var(--wood-1a) 0px, var(--wood-1a) 3px, var(--wood-1b) 3px, var(--wood-1b) 5px);
+  }
+
+  .card.fish .board-shape { clip-path: url(#board-fish); padding: 6px 16px; }
+
+  .card:nth-child(4n+2) .board-shape {
+    background: repeating-linear-gradient(95deg, var(--wood-2a) 0px, var(--wood-2a) 3px, var(--wood-2b) 3px, var(--wood-2b) 5px);
+  }
+  .card:nth-child(4n+3) .board-shape {
+    background: repeating-linear-gradient(99deg, var(--wood-3a) 0px, var(--wood-3a) 3px, var(--wood-3b) 3px, var(--wood-3b) 5px);
+  }
+  .card:nth-child(4n+4) .board-shape {
+    background: linear-gradient(to bottom, var(--paint-base) 0%, var(--paint-base) 76%, var(--paint-tail) 76%, var(--paint-tail) 100%);
+  }
+
+  /* stringer central (réguazinha da prancha) */
+  .board-shape::before {
+    content: "";
+    position: absolute;
+    top: 3%;
+    bottom: 3%;
+    left: 50%;
+    width: 1px;
+    background: rgba(46,32,19,0.3);
+    transform: translateX(-50%);
+  }
+
+  /* tampão do leash, perto do rabo */
+  .board-shape::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 8%;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(46,32,19,0.4);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.4);
+    transform: translateX(-50%);
+  }
+
+  .card.fish .board-shape::after { bottom: 11%; }
+
+  /* quilha, espiando por baixo do rabo */
+  .card::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 8px solid var(--rail);
+    transform: translateX(-50%);
+  }
+
+  .catalog-no {
+    position: relative;
+    font-family: 'Special Elite', monospace;
+    font-size: 8.5px;
+    color: var(--rust);
+    letter-spacing: 0.04em;
+    margin: 0 0 6px;
+  }
+
+  .card h2 {
+    position: relative;
+    font-family: 'Alfa Slab One', serif;
+    font-weight: 400;
+    font-size: 11.5px;
+    line-height: 1.28;
+    margin: 0 0 8px;
+    color: var(--text-dark);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.25);
+  }
+
+  .card-footer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(46,32,19,0.32);
+    width: 100%;
+  }
+
+  .isbn {
+    font-family: 'Special Elite', monospace;
+    font-size: 7.5px;
+    color: #5d4326;
+  }
+
+  .price {
+    font-family: 'Alfa Slab One', serif;
+    font-size: 12.5px;
+    color: var(--rust);
+    white-space: nowrap;
+  }
+
+  .price small {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 9px;
+    opacity: 0.85;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 52px;
+  }
+
+  button#loadMore {
+    font-family: 'Special Elite', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: transparent;
+    border: 1px solid var(--amber-soft);
+    color: var(--amber);
+    padding: 14px 32px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  button#loadMore:hover:not(:disabled) {
+    background: var(--amber);
+    color: var(--bg-deep);
+    box-shadow: 0 0 24px rgba(226,163,61,0.5);
+  }
+
+  button#loadMore:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .empty, .error, .loading {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-muted);
+    font-family: 'Special Elite', monospace;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+  }
+
+  .error { color: var(--rust); }
+
+  @media (max-width: 480px) {
+    #grid { grid-template-columns: repeat(auto-fill, minmax(92px, 108px)); gap: 18px 10px; }
+    .card h2 { font-size: 10px; }
+    .sun { width: 200px; height: 200px; top: -80px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- formatos das pranchas, definidos uma vez e reaproveitados via clip-path -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <clipPath id="board-long" clipPathUnits="objectBoundingBox">
+      <path d="M0.5,0.01
+               C0.66,0.01 0.78,0.05 0.83,0.14
+               C0.90,0.25 0.90,0.35 0.87,0.45
+               C0.85,0.55 0.85,0.62 0.87,0.70
+               C0.89,0.80 0.85,0.90 0.75,0.95
+               C0.66,0.99 0.58,1.0 0.5,1.0
+               C0.42,1.0 0.34,0.99 0.25,0.95
+               C0.15,0.90 0.11,0.80 0.13,0.70
+               C0.15,0.62 0.15,0.55 0.13,0.45
+               C0.10,0.35 0.10,0.25 0.17,0.14
+               C0.22,0.05 0.34,0.01 0.5,0.01 Z" />
+    </clipPath>
+    <clipPath id="board-fish" clipPathUnits="objectBoundingBox">
+      <path d="M0.5,0.03
+               C0.70,0.03 0.85,0.10 0.92,0.24
+               C0.98,0.36 0.97,0.48 0.93,0.60
+               C0.89,0.72 0.84,0.82 0.74,0.90
+               L0.60,0.97
+               L0.5,0.82
+               L0.40,0.97
+               L0.26,0.90
+               C0.16,0.82 0.11,0.72 0.07,0.60
+               C0.03,0.48 0.02,0.36 0.08,0.24
+               C0.15,0.10 0.30,0.03 0.5,0.03 Z" />
+    </clipPath>
+  </defs>
+</svg>
+
+<header>
+  <div class="sun"></div>
+  <p class="eyebrow">Catálogo ao entardecer</p>
+  <h1>Estante &amp; Maré</h1>
+  <p>Livros que a maré trouxe, em cima da prancha. Cada tábua é um volume disponível no acervo, direto do banco de dados.</p>
+</header>
+
+<main>
+  <div class="status-bar">
+    <span id="statusCount">carregando...</span>
+    <span id="statusPage"></span>
+  </div>
+
+  <div id="grid"></div>
+  <div id="stateMessage"></div>
+
+  <div class="controls" id="controls" style="display:none;">
+    <button id="loadMore">Carregar mais volumes</button>
+  </div>
+</main>
+
+<script>
+  const API_BASE = "http://127.0.0.1:8000";
+  const LIMIT = 12;
+  let paginaAtual = 1;
+  let totalPaginas = 1;
+  let indiceGlobal = 0;
+
+  const grid = document.getElementById("grid");
+  const stateMessage = document.getElementById("stateMessage");
+  const controls = document.getElementById("controls");
+  const loadMoreBtn = document.getElementById("loadMore");
+  const statusCount = document.getElementById("statusCount");
+  const statusPage = document.getElementById("statusPage");
+
+  function formatarPreco(valor) {
+    return valor.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function criarCard(livro) {
+    indiceGlobal++;
+    const ehFish = indiceGlobal % 5 === 0; // 1 a cada 5 pranchas é uma fish
+
+    const card = document.createElement("div");
+    card.className = "card" + (ehFish ? " fish" : "");
+    card.innerHTML = `
+      <div class="board-rail">
+        <div class="board-shape">
+          <p class="catalog-no">Nº ${String(livro.IdLivro).padStart(4, "0")}</p>
+          <h2>${livro.NomeLivro}</h2>
+          <div class="card-footer">
+            <span class="isbn">${livro.ISBN13.trim()}</span>
+            <span class="price"><small>R$</small> ${formatarPreco(livro.PrecoLivro)}</span>
+          </div>
+        </div>
+      </div>
+    `;
+    return card;
+  }
+
+  async function carregarLivros(pagina) {
+    loadMoreBtn.disabled = true;
+    loadMoreBtn.textContent = "Buscando...";
+
+    try {
+      const resposta = await fetch(`${API_BASE}/livros?page=${pagina}&limit=${LIMIT}`);
+      if (!resposta.ok) throw new Error("A API respondeu com erro " + resposta.status);
+
+      const dados = await resposta.json();
+      totalPaginas = dados.total_paginas;
+      paginaAtual = dados.pagina_atual;
+
+      if (dados.total_livros === 0) {
+        stateMessage.innerHTML = '<p class="empty">A maré ainda não trouxe nenhum livro.</p>';
+        controls.style.display = "none";
+        statusCount.textContent = "0 volumes";
+        return;
+      }
+
+      dados.livros.forEach(livro => grid.appendChild(criarCard(livro)));
+
+      statusCount.textContent = `${dados.total_livros} volume${dados.total_livros === 1 ? "" : "s"} no acervo`;
+      statusPage.textContent = `página ${paginaAtual} de ${totalPaginas}`;
+
+      if (paginaAtual >= totalPaginas) {
+        controls.style.display = "none";
+      } else {
+        controls.style.display = "flex";
+        loadMoreBtn.disabled = false;
+        loadMoreBtn.textContent = "Carregar mais volumes";
+      }
+
+    } catch (erro) {
+      stateMessage.innerHTML = `<p class="error">Não foi possível carregar o catálogo. Confirme que a API está rodando em ${API_BASE}.<br>(${erro.message})</p>`;
+      controls.style.display = "none";
+    }
+  }
+
+  loadMoreBtn.addEventListener("click", () => {
+    carregarLivros(paginaAtual + 1);
+  });
+
+  stateMessage.innerHTML = '<p class="loading">Consultando o acervo...</p>';
+  carregarLivros(1).then(() => { stateMessage.innerHTML = ""; });
+</script>
+
+</body>
+</html>

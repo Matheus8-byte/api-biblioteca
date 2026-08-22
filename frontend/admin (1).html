@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estante & Maré — Painel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Special+Elite&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #17110C;
+    --bg-deep: #0F0B08;
+    --panel: #201811;
+    --panel-line: #382A1C;
+    --amber: #E2A33D;
+    --amber-soft: #C98B34;
+    --rust: #C1502E;
+    --teal: #6FA39A;
+    --text-light: #F3E7CC;
+    --text-muted: #A6957A;
+    --text-dark: #2E2013;
+    --danger: #B5432B;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text-light);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    z-index: 999;
+  }
+
+  header {
+    padding: 40px 24px 28px;
+    text-align: center;
+    border-bottom: 1px solid var(--panel-line);
+  }
+
+  .eyebrow {
+    font-family: 'Special Elite', monospace;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin: 0 0 12px;
+  }
+
+  h1 {
+    font-family: 'Alfa Slab One', serif;
+    font-weight: 400;
+    font-size: clamp(26px, 4vw, 38px);
+    margin: 0 0 6px;
+    color: #EDDDBB;
+  }
+
+  header p {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin: 0;
+  }
+
+  a.voltar {
+    display: inline-block;
+    margin-top: 14px;
+    font-family: 'Special Elite', monospace;
+    font-size: 11px;
+    color: var(--teal);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+  }
+  a.voltar:hover { text-decoration: underline; }
+
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 36px 20px 100px;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    padding: 24px 22px;
+    margin-bottom: 28px;
+  }
+
+  .panel h2 {
+    font-family: 'Alfa Slab One', serif;
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--amber);
+    margin: 0 0 4px;
+  }
+
+  .panel .desc {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin: 0 0 18px;
+    line-height: 1.5;
+  }
+
+  label {
+    display: block;
+    font-family: 'Special Elite', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 14px 0 6px;
+  }
+
+  input[type="text"], input[type="number"], input[type="date"], input[type="password"], select {
+    width: 100%;
+    background: var(--bg-deep);
+    border: 1px solid var(--panel-line);
+    border-radius: 3px;
+    padding: 10px 12px;
+    color: var(--text-light);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+  }
+
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0L5 6L10 0' fill='%23A6957A'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 30px;
+  }
+
+  select option { background: var(--bg-deep); color: var(--text-light); }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--amber-soft);
+  }
+
+  .row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 14px;
+  }
+
+  .campo-com-botao {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+  }
+
+  .campo-com-botao select { flex: 1; }
+
+  .btn-add-inline {
+    background: var(--bg-deep);
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    line-height: 1;
+    width: 40px;
+    height: 40px;
+    border-radius: 3px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .btn-add-inline:hover { background: var(--teal); color: var(--bg-deep); }
+
+  .novo-inline {
+    display: none;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .novo-inline.show { display: flex; }
+  .novo-inline input { flex: 1; }
+  .novo-inline button {
+    background: var(--amber);
+    color: var(--bg-deep);
+    border: none;
+    border-radius: 3px;
+    padding: 0 14px;
+    font-family: 'Special Elite', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .novo-inline .cancelar {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--panel-line);
+  }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    font-family: 'Special Elite', monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--bg-deep);
+    border: 1px solid var(--panel-line);
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .tab.active {
+    color: var(--bg-deep);
+    background: var(--amber);
+    border-color: var(--amber);
+  }
+
+  button { transition: filter 0.15s ease; }
+  button:hover { filter: brightness(1.1); }
+  button:disabled { opacity: 0.5; cursor: default; filter: none; }
+
+  .btn-primary {
+    font-family: 'Special Elite', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 3px;
+    padding: 12px 22px;
+    cursor: pointer;
+    background: var(--amber); color: var(--bg-deep); margin-top: 18px; width: 100%;
+  }
+  .btn-danger {
+    font-family: 'Special Elite', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    background: var(--danger); color: var(--text-light); font-size: 10px; padding: 8px 12px;
+  }
+  .btn-import {
+    font-family: 'Special Elite', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 3px;
+    padding: 12px 22px;
+    cursor: pointer;
+    background: var(--teal); color: var(--bg-deep); width: 100%; margin-top: 4px;
+  }
+
+  .feedback {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 3px;
+    font-size: 13px;
+    line-height: 1.5;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok { background: rgba(111,163,154,0.15); border: 1px solid var(--teal); color: var(--teal); }
+  .feedback.erro { background: rgba(181,67,43,0.15); border: 1px solid var(--danger); color: #E39A87; }
+
+  .lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 420px;
+    overflow-y: auto;
+  }
+
+  .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-deep);
+    border: 1px solid var(--panel-line);
+    border-radius: 3px;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .item-info { min-width: 0; }
+
+  .item-nome {
+    font-size: 13px;
+    color: var(--text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-meta {
+    font-family: 'Special Elite', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .apikey-status {
+    font-family: 'Special Elite', monospace;
+    font-size: 11px;
+    margin-top: 10px;
+  }
+  .apikey-status.ok { color: var(--teal); }
+  .apikey-status.vazio { color: var(--text-muted); }
+
+  .loading-lista {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-muted);
+    font-family: 'Special Elite', monospace;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Cabine do quiosque</p>
+  <h1>Painel &amp; Maré</h1>
+  <p>Área de trabalho — cadastrar e remover volumes do acervo.</p>
+  <a class="voltar" href="vitrine.html">&larr; voltar para a vitrine</a>
+</header>
+
+<main>
+
+  <div class="panel">
+    <h2>Chave de acesso</h2>
+    <p class="desc">Toda ação aqui exige a API Key da Biblioteca. Ela fica só nesta aba, na memória do navegador — some ao fechar a página.</p>
+    <label for="apiKey">X-API-Key</label>
+    <input type="password" id="apiKey" placeholder="Cole a chave aqui">
+    <p class="apikey-status vazio" id="apiKeyStatus">nenhuma chave informada ainda</p>
+  </div>
+
+  <div class="panel">
+    <h2>Adicionar ao acervo</h2>
+    <p class="desc">Cadastre manualmente ou importe automaticamente a partir do ISBN.</p>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="manual">Cadastro manual</div>
+      <div class="tab" data-tab="importar">Importar por ISBN</div>
+    </div>
+
+    <form id="formImportar" style="display:none;">
+      <label for="impIsbn">ISBN</label>
+      <input type="text" id="impIsbn" placeholder="Ex: 9780132350884">
+      <label for="impPreco">Preço (opcional, padrão R$ 0,00)</label>
+      <input type="text" id="impPreco" placeholder="Ex: 49.90">
+      <button type="submit" class="btn-import">Importar da Google Books</button>
+    </form>
+
+    <form id="formManual">
+      <label for="nome">Nome do livro</label>
+      <input type="text" id="nome" required>
+
+      <div class="row2">
+        <div>
+          <label for="isbn">ISBN13</label>
+          <input type="text" id="isbn" required maxlength="13">
+        </div>
+        <div>
+          <label for="dataPub">Data de publicação</label>
+          <input type="date" id="dataPub">
+        </div>
+      </div>
+
+      <div class="row2">
+        <div>
+          <label for="preco">Preço</label>
+          <input type="number" step="0.01" id="preco" required>
+        </div>
+        <div>
+          <label for="paginas">Nº de páginas</label>
+          <input type="number" id="paginas" required>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div>
+          <label for="idEditora">Editora</label>
+          <div class="campo-com-botao">
+            <select id="idEditora" required><option value="">carregando...</option></select>
+            <button type="button" class="btn-add-inline" data-alvo="editora">+</button>
+          </div>
+          <div class="novo-inline" id="novoEditoraBox">
+            <input type="text" id="novoEditoraNome" placeholder="Nome da nova editora">
+            <button type="button" id="confirmarNovaEditora">Criar</button>
+            <button type="button" class="cancelar" data-cancelar="editora">×</button>
+          </div>
+        </div>
+        <div>
+          <label for="idAssunto">Assunto</label>
+          <div class="campo-com-botao">
+            <select id="idAssunto" required><option value="">carregando...</option></select>
+            <button type="button" class="btn-add-inline" data-alvo="assunto">+</button>
+          </div>
+          <div class="novo-inline" id="novoAssuntoBox">
+            <input type="text" id="novoAssuntoNome" placeholder="Nome do novo assunto">
+            <button type="button" id="confirmarNovoAssunto">Criar</button>
+            <button type="button" class="cancelar" data-cancelar="assunto">×</button>
+          </div>
+        </div>
+      </div>
+
+      <label for="edicao">Edição (opcional)</label>
+      <input type="number" id="edicao">
+
+      <button type="submit" class="btn-primary">Cadastrar livro</button>
+    </form>
+
+    <div class="feedback" id="feedbackCadastro"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Acervo atual</h2>
+    <p class="desc">Remover um volume aqui exclui o registro permanentemente.</p>
+    <div class="lista" id="lista">
+      <div class="loading-lista">carregando acervo...</div>
+    </div>
+    <div class="feedback" id="feedbackLista"></div>
+  </div>
+
+</main>
+
+<script>
+  const API_BASE = "http://127.0.0.1:8000";
+
+  const apiKeyInput = document.getElementById("apiKey");
+  const apiKeyStatus = document.getElementById("apiKeyStatus");
+  const tabs = document.querySelectorAll(".tab");
+  const formManual = document.getElementById("formManual");
+  const formImportar = document.getElementById("formImportar");
+  const feedbackCadastro = document.getElementById("feedbackCadastro");
+  const feedbackLista = document.getElementById("feedbackLista");
+  const listaEl = document.getElementById("lista");
+  const selectEditora = document.getElementById("idEditora");
+  const selectAssunto = document.getElementById("idAssunto");
+
+  apiKeyInput.addEventListener("input", () => {
+    if (apiKeyInput.value.trim()) {
+      apiKeyStatus.textContent = "chave preenchida — pronta para uso";
+      apiKeyStatus.className = "apikey-status ok";
+    } else {
+      apiKeyStatus.textContent = "nenhuma chave informada ainda";
+      apiKeyStatus.className = "apikey-status vazio";
+    }
+  });
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      const alvo = tab.dataset.tab;
+      formManual.style.display = alvo === "manual" ? "block" : "none";
+      formImportar.style.display = alvo === "importar" ? "block" : "none";
+      feedbackCadastro.className = "feedback";
+    });
+  });
+
+  function mostrarFeedback(el, mensagem, tipo) {
+    el.textContent = mensagem;
+    el.className = `feedback show ${tipo}`;
+  }
+
+  function exigirChave() {
+    const chave = apiKeyInput.value.trim();
+    if (!chave) {
+      mostrarFeedback(feedbackCadastro, "Informe a API Key acima antes de continuar.", "erro");
+      return null;
+    }
+    return chave;
+  }
+
+  // ---- Carregar dropdowns de editora/assunto ----
+  async function carregarSelect(endpoint, selectEl, campoId, campoNome, placeholder) {
+    try {
+      const resposta = await fetch(`${API_BASE}/${endpoint}`);
+      const dados = await resposta.json();
+      selectEl.innerHTML = `<option value="">${placeholder}</option>`;
+      dados.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item[campoId];
+        opt.textContent = item[campoNome];
+        selectEl.appendChild(opt);
+      });
+    } catch (erro) {
+      selectEl.innerHTML = `<option value="">erro ao carregar</option>`;
+    }
+  }
+
+  function carregarEditoras() {
+    carregarSelect("editoras", selectEditora, "IdEditora", "NomeEditora", "Selecione a editora");
+  }
+  function carregarAssuntos() {
+    carregarSelect("assuntos", selectAssunto, "IdAssunto", "NomeAssunto", "Selecione o assunto");
+  }
+
+  // ---- Botões "+ nova editora/assunto" ----
+  document.querySelectorAll(".btn-add-inline").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const alvo = btn.dataset.alvo;
+      document.getElementById(alvo === "editora" ? "novoEditoraBox" : "novoAssuntoBox").classList.add("show");
+    });
+  });
+
+  document.querySelectorAll("[data-cancelar]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const alvo = btn.dataset.cancelar;
+      document.getElementById(alvo === "editora" ? "novoEditoraBox" : "novoAssuntoBox").classList.remove("show");
+    });
+  });
+
+  document.getElementById("confirmarNovaEditora").addEventListener("click", async () => {
+    const chave = exigirChave();
+    if (!chave) return;
+    const nome = document.getElementById("novoEditoraNome").value.trim();
+    if (!nome) return;
+
+    try {
+      const resposta = await fetch(`${API_BASE}/editoras`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-API-Key": chave },
+        body: JSON.stringify({ NomeEditora: nome })
+      });
+      const dados = await resposta.json();
+      if (!resposta.ok) {
+        mostrarFeedback(feedbackCadastro, `Erro (${resposta.status}): ${dados.detail}`, "erro");
+        return;
+      }
+      await carregarEditoras();
+      selectEditora.value = dados.IdEditora;
+      document.getElementById("novoEditoraBox").classList.remove("show");
+      document.getElementById("novoEditoraNome").value = "";
+    } catch (erro) {
+      mostrarFeedback(feedbackCadastro, `Não foi possível criar a editora (${erro.message}).`, "erro");
+    }
+  });
+
+  document.getElementById("confirmarNovoAssunto").addEventListener("click", async () => {
+    const chave = exigirChave();
+    if (!chave) return;
+    const nome = document.getElementById("novoAssuntoNome").value.trim();
+    if (!nome) return;
+
+    try {
+      const resposta = await fetch(`${API_BASE}/assuntos`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-API-Key": chave },
+        body: JSON.stringify({ NomeAssunto: nome })
+      });
+      const dados = await resposta.json();
+      if (!resposta.ok) {
+        mostrarFeedback(feedbackCadastro, `Erro (${resposta.status}): ${dados.detail}`, "erro");
+        return;
+      }
+      await carregarAssuntos();
+      selectAssunto.value = dados.IdAssunto;
+      document.getElementById("novoAssuntoBox").classList.remove("show");
+      document.getElementById("novoAssuntoNome").value = "";
+    } catch (erro) {
+      mostrarFeedback(feedbackCadastro, `Não foi possível criar o assunto (${erro.message}).`, "erro");
+    }
+  });
+
+  // ---- Cadastro manual ----
+  formManual.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+    const chave = exigirChave();
+    if (!chave) return;
+
+    const corpo = {
+      NomeLivro: document.getElementById("nome").value,
+      ISBN13: document.getElementById("isbn").value,
+      DataPub: document.getElementById("dataPub").value || null,
+      PrecoLivro: parseFloat(document.getElementById("preco").value),
+      NumeroPaginas: parseInt(document.getElementById("paginas").value),
+      IdEditora: parseInt(selectEditora.value),
+      IdAssunto: parseInt(selectAssunto.value),
+      Edicao: document.getElementById("edicao").value ? parseInt(document.getElementById("edicao").value) : null
+    };
+
+    try {
+      const resposta = await fetch(`${API_BASE}/livros`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-API-Key": chave },
+        body: JSON.stringify(corpo)
+      });
+      const dados = await resposta.json();
+
+      if (!resposta.ok) {
+        mostrarFeedback(feedbackCadastro, `Erro (${resposta.status}): ${dados.detail || "falha ao cadastrar"}`, "erro");
+        return;
+      }
+
+      mostrarFeedback(feedbackCadastro, `Cadastrado com sucesso — IdLivro ${dados.IdLivro}.`, "ok");
+      formManual.reset();
+      carregarLista();
+
+    } catch (erro) {
+      mostrarFeedback(feedbackCadastro, `Não foi possível falar com a API (${erro.message}).`, "erro");
+    }
+  });
+
+  // ---- Importar por ISBN ----
+  formImportar.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+    const chave = exigirChave();
+    if (!chave) return;
+
+    const isbn = document.getElementById("impIsbn").value.trim();
+    const preco = document.getElementById("impPreco").value.trim();
+    let url = `${API_BASE}/livros/importar/${encodeURIComponent(isbn)}`;
+    if (preco) url += `?preco=${encodeURIComponent(preco)}`;
+
+    try {
+      const resposta = await fetch(url, {
+        method: "POST",
+        headers: { "X-API-Key": chave }
+      });
+      const dados = await resposta.json();
+
+      if (!resposta.ok) {
+        mostrarFeedback(feedbackCadastro, `Erro (${resposta.status}): ${dados.detail || "falha ao importar"}`, "erro");
+        return;
+      }
+
+      mostrarFeedback(feedbackCadastro, `Importado "${dados.NomeLivro}" — IdLivro ${dados.IdLivro}.`, "ok");
+      formImportar.reset();
+      carregarLista();
+      carregarEditoras();
+      carregarAssuntos();
+
+    } catch (erro) {
+      mostrarFeedback(feedbackCadastro, `Não foi possível falar com a API (${erro.message}).`, "erro");
+    }
+  });
+
+  // ---- Lista + remoção ----
+  async function carregarLista() {
+    listaEl.innerHTML = '<div class="loading-lista">carregando acervo...</div>';
+    try {
+      const resposta = await fetch(`${API_BASE}/livros?page=1&limit=100`);
+      const dados = await resposta.json();
+
+      if (dados.total_livros === 0) {
+        listaEl.innerHTML = '<div class="loading-lista">acervo vazio.</div>';
+        return;
+      }
+
+      listaEl.innerHTML = "";
+      dados.livros.forEach(livro => {
+        const item = document.createElement("div");
+        item.className = "item";
+        item.innerHTML = `
+          <div class="item-info">
+            <div class="item-nome">${livro.NomeLivro}</div>
+            <div class="item-meta">Nº ${String(livro.IdLivro).padStart(4, "0")} · R$ ${livro.PrecoLivro.toFixed(2)}</div>
+          </div>
+          <button class="btn-danger" data-id="${livro.IdLivro}">Remover</button>
+        `;
+        listaEl.appendChild(item);
+      });
+
+      document.querySelectorAll(".btn-danger").forEach(btn => {
+        btn.addEventListener("click", () => removerLivro(btn.dataset.id, btn));
+      });
+
+    } catch (erro) {
+      listaEl.innerHTML = `<div class="loading-lista">Não foi possível carregar (${erro.message}).</div>`;
+    }
+  }
+
+  async function removerLivro(id, botao) {
+    const chave = apiKeyInput.value.trim();
+    if (!chave) {
+      mostrarFeedback(feedbackLista, "Informe a API Key acima antes de remover.", "erro");
+      return;
+    }
+
+    const confirmar = confirm(`Remover o livro Nº ${String(id).padStart(4, "0")} definitivamente?`);
+    if (!confirmar) return;
+
+    botao.disabled = true;
+    botao.textContent = "Removendo...";
+
+    try {
+      const resposta = await fetch(`${API_BASE}/livros/${id}`, {
+        method: "DELETE",
+        headers: { "X-API-Key": chave }
+      });
+      const dados = await resposta.json();
+
+      if (!resposta.ok) {
+        mostrarFeedback(feedbackLista, `Erro (${resposta.status}): ${dados.detail || "falha ao remover"}`, "erro");
+        botao.disabled = false;
+        botao.textContent = "Remover";
+        return;
+      }
+
+      mostrarFeedback(feedbackLista, `Livro Nº ${String(id).padStart(4, "0")} removido.`, "ok");
+      carregarLista();
+
+    } catch (erro) {
+      mostrarFeedback(feedbackLista, `Não foi possível falar com a API (${erro.message}).`, "erro");
+      botao.disabled = false;
+      botao.textContent = "Remover";
+    }
+  }
+
+  carregarLista();
+  carregarEditoras();
+  carregarAssuntos();
+</script>
+
+</body>
+</html>

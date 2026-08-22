@@ -62,24 +62,33 @@ Mapa dos próximos passos do projeto, organizado em fases. Não é uma ordem rí
 
 ---
 
-## Fase 7 — Git/GitHub (versionar o projeto)
+## Fase 7 — Git/GitHub (versionar o projeto) ✅ concluída (Parte 15)
 
-- [ ] Instalar/configurar Git, se ainda não estiver
-- [ ] `git init` no projeto, primeiro commit
-- [ ] Confirmar que `.gitignore` (já criado na Fase 2) está protegendo `.env` corretamente
-- [ ] Criar repositório no GitHub, subir o projeto
-- [ ] Conceitos básicos: commit, branch, push/pull — o necessário para versionar esse projeto com segurança
+- [x] Instalar/configurar Git
+- [x] `git init` no projeto, primeiro commit
+- [x] Confirmar que `.gitignore` (já criado na Fase 2) está protegendo `.env` corretamente
+- [x] Criar repositório no GitHub, subir o projeto (https://github.com/Matheus8-byte/api-biblioteca)
+- [x] Conceitos básicos: commit, push — praticados; branch/pull ainda não foram necessários, ficam para quando surgir a necessidade (ex: ao mexer no site, Fase 8)
+- [x] Documentação do projeto (Partes 1-14 + plano de estudos) publicada em `docs/` no repositório
 
 ---
 
-## Fase 8 — Site conectado ao banco (via API)
+## Fase 8 — Site conectado ao banco (via API) ✅ concluída (Parte 16)
 
-- [ ] Entender a arquitetura: site como mais um cliente da API (site → API → banco, nunca site → banco direto)
-- [ ] Telas básicas: listar, cadastrar, editar, remover livros
-- [ ] `fetch` em JavaScript para chamar os endpoints já existentes
-- [ ] Discussão de segurança: como lidar com a API Key no frontend (diferente de guardar ela num `.env` de servidor)
-- [ ] Começar simples (HTML + CSS + JavaScript puro), sem framework — objetivo é fechar o ciclo banco → API → tela, não aprofundar em frontend
-- [ ] (Se fizer sentido depois) evoluir para um framework como React, como trilha à parte
+- [x] Entender a arquitetura: site como mais um cliente da API (site → API → banco, nunca site → banco direto)
+- [x] Vitrine pública (leitura livre): listagem de livros com paginação, identidade visual própria (cards em formato de prancha de surf vintage)
+- [x] `fetch` em JavaScript para chamar os endpoints já existentes
+- [x] CORS habilitado na API (`CORSMiddleware`), necessário para o navegador poder chamar a API
+- [x] Painel administrativo (protegido por API Key): cadastro manual, importação por ISBN, remoção
+- [x] Dropdowns de editora/assunto (com criação inline) — gerou 2 endpoints novos: `POST /editoras`, `POST /assuntos`
+- [x] Discussão de segurança: API Key no frontend (mantida só em memória, limitação aceita conscientemente para projeto local)
+- [ ] (Futuro, opcional) Evoluir para um framework como React, se houver interesse em aprofundar frontend
+
+---
+
+## Todas as fases planejadas foram concluídas 🎉
+
+Restam em aberto apenas: a Fase 5 (SQL), que segue contínua em paralelo aos estudos externos, e os itens do radar abaixo, sem compromisso de prazo.
 
 ---
 

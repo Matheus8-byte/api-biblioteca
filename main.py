@@ -7,6 +7,7 @@ import pyodbc
 import json
 import os
 import requests
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
@@ -18,6 +19,12 @@ GOOGLE_BOOKS_API_KEY = os.getenv("GOOGLE_BOOKS_API_KEY")
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 def get_conexao():
     return pyodbc.connect(
         f"DRIVER={DB_DRIVER};"
@@ -102,6 +109,12 @@ class LivroEntrada(BaseModel):
 
 class DeleteLoteEntrada(BaseModel):
     ids: list[int]
+
+class EditoraEntrada(BaseModel):
+    NomeEditora: str
+
+class AssuntoEntrada(BaseModel):
+    NomeAssunto: str
 
 @app.post("/livros", dependencies=[Depends(verificar_api_key)])
 def criar_livro(livro: LivroEntrada):
@@ -338,6 +351,61 @@ def listar_assuntos():
     resultado = [dict(zip(colunas, linha)) for linha in cursor.fetchall()]
     conexao.close()
     return resultado
+
+@app.post("/editoras", dependencies=[Depends(verificar_api_key)])
+def criar_editora(editora: EditoraEntrada):
+    conexao = get_conexao()
+    cursor = conexao.cursor()
+    try:
+        cursor.execute("SELECT IdEditora FROM Editora WHERE NomeEditora = ?", editora.NomeEditora)
+        existente = cursor.fetchone()
+        if existente:
+            raise HTTPException(status_code=409, detail=f"Editora já cadastrada (IdEditora: {existente.IdEditora})")
+
+        cursor.execute("""
+            INSERT INTO Editora (NomeEditora)
+            OUTPUT INSERTED.IdEditora
+            VALUES (?)
+        """, editora.NomeEditora)
+        novo_id = cursor.fetchone()[0]
+        conexao.commit()
+        registrar_log("/editoras", "POST", editora.model_dump_json(), "SUCESSO", id_gerado=novo_id)
+        return {"IdEditora": novo_id, "NomeEditora": editora.NomeEditora}
+
+    except pyodbc.Error as e:
+        conexao.rollback()
+        registrar_log("/editoras", "POST", editora.model_dump_json(), "ERRO", mensagem_erro=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
+    finally:
+        conexao.close()
+
+@app.post("/assuntos", dependencies=[Depends(verificar_api_key)])
+def criar_assunto(assunto: AssuntoEntrada):
+    conexao = get_conexao()
+    cursor = conexao.cursor()
+    try:
+        cursor.execute("SELECT IdAssunto FROM Assunto WHERE NomeAssunto = ?", assunto.NomeAssunto)
+        existente = cursor.fetchone()
+        if existente:
+            raise HTTPException(status_code=409, detail=f"Assunto já cadastrado (IdAssunto: {existente.IdAssunto})")
+
+        cursor.execute("""
+            INSERT INTO Assunto (NomeAssunto)
+            OUTPUT INSERTED.IdAssunto
+            VALUES (?)
+        """, assunto.NomeAssunto)
+        novo_id = cursor.fetchone()[0]
+        conexao.commit()
+        registrar_log("/assuntos", "POST", assunto.model_dump_json(), "SUCESSO", id_gerado=novo_id)
+        return {"IdAssunto": novo_id, "NomeAssunto": assunto.NomeAssunto}
+
+    except pyodbc.Error as e:
+        conexao.rollback()
+        registrar_log("/assuntos", "POST", assunto.model_dump_json(), "ERRO", mensagem_erro=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
+    finally:
+        conexao.close()
+
 
 @app.get("/logs")
 def listar_logs():
