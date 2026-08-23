@@ -92,15 +92,16 @@ Ponto de checagem consciente: após a Fase 8, avaliado se o próximo passo natur
 
 ---
 
-## Fase 9 — pandas: a ponte entre Python e SQL (em andamento — Parte 17)
+## Fase 9 — pandas: a ponte entre Python e SQL (em andamento — Partes 17-18)
 
 - [x] O que é um DataFrame, e por que ele é o "queridinho" do mercado para dados
 - [x] `pd.read_sql(...)` — puxar o resultado de uma query direto para um DataFrame, sem o `dict(zip(colunas, linha))` manual
 - [x] Exercícios práticos usando a base `Biblioteca`: preço médio por editora, quantidade de livros por assunto, agregações simples
 - [x] Gerar relatório em Excel a partir do banco (`.to_excel()`) — cenário comum em trabalho real de integração
-- [ ] (Possível extensão) endpoint novo `GET /relatorios/...`, devolvendo um Excel gerado na hora
+- [x] Endpoint `GET /relatorios/acervo`, devolvendo Excel gerado na hora, direto pela API (Parte 18)
+- [x] Organização dos scripts auxiliares em pasta própria (`scripts/`) + catálogo de referência rápida (Parte 18)
 - [ ] (Possível extensão) exercício de ETL simples: ler um CSV externo, limpar com pandas, inserir no banco
-- [ ] (Possível extensão) limpar os dados de teste residuais (ISBNs incompletos) identificados durante a Parte 17, usando o próprio pandas
+- [x] Diagnóstico dos dados de teste residuais (ISBNs incompletos) — mantidos conscientemente por ora, documentados
 
 ---
 

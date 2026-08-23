@@ -8,6 +8,9 @@ import json
 import os
 import requests
 from fastapi.middleware.cors import CORSMiddleware
+import pandas as pd
+from io import BytesIO
+from fastapi.responses import StreamingResponse
 
 load_dotenv()
 
@@ -416,3 +419,24 @@ def listar_logs():
     resultado = [dict(zip(colunas, linha)) for linha in cursor.fetchall()]
     conexao.close()
     return resultado
+
+@app.get("/relatorios/acervo")
+def relatorio_acervo():
+    conexao = get_conexao()
+
+    df_livros = pd.read_sql("SELECT * FROM Livro", conexao)
+    df_editoras = pd.read_sql("SELECT * FROM Editora", conexao)
+    df_assuntos = pd.read_sql("SELECT * FROM Assunto", conexao)
+    conexao.close()
+
+    df_completo = df_livros.merge(df_editoras, on="IdEditora").merge(df_assuntos, on="IdAssunto")
+
+    buffer = BytesIO()
+    df_completo.to_excel(buffer, index=False, sheet_name="Acervo")
+    buffer.seek(0)
+
+    return StreamingResponse(
+        buffer,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=relatorio_acervo.xlsx"}
+    )
