@@ -88,14 +88,27 @@ Mapa dos próximos passos do projeto, organizado em fases. Não é uma ordem rí
 
 ## Todas as fases planejadas foram concluídas 🎉
 
-Restam em aberto apenas: a Fase 5 (SQL), que segue contínua em paralelo aos estudos externos, e os itens do radar abaixo, sem compromisso de prazo.
+Ponto de checagem consciente: após a Fase 8, avaliado se o próximo passo natural (tela de login/JWT, aprofundar frontend) realmente reforçava o foco original do projeto — **integração, SQL e Python**. Decisão: pausar a frente de frontend por ora e priorizar uma nova fase que une os três pilares de forma mais direta.
+
+---
+
+## Fase 9 — pandas: a ponte entre Python e SQL (em andamento — Parte 17)
+
+- [x] O que é um DataFrame, e por que ele é o "queridinho" do mercado para dados
+- [x] `pd.read_sql(...)` — puxar o resultado de uma query direto para um DataFrame, sem o `dict(zip(colunas, linha))` manual
+- [x] Exercícios práticos usando a base `Biblioteca`: preço médio por editora, quantidade de livros por assunto, agregações simples
+- [x] Gerar relatório em Excel a partir do banco (`.to_excel()`) — cenário comum em trabalho real de integração
+- [ ] (Possível extensão) endpoint novo `GET /relatorios/...`, devolvendo um Excel gerado na hora
+- [ ] (Possível extensão) exercício de ETL simples: ler um CSV externo, limpar com pandas, inserir no banco
+- [ ] (Possível extensão) limpar os dados de teste residuais (ISBNs incompletos) identificados durante a Parte 17, usando o próprio pandas
 
 ---
 
 ## Radar (ideias mais pra frente, sem compromisso)
 
+- [ ] Tela de login para o painel administrativo (usuário/senha, JWT, hash de senha) — repriorizada para depois da Fase 9, por ora
 - [ ] Deploy simples (rodar a API além do `localhost`)
-- [ ] Autenticação mais robusta (JWT), se o mercado-alvo pedir
+- [ ] Evoluir o frontend com um framework, se houver interesse em aprofundar essa frente
 
 ---
 
